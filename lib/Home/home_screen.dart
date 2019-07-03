@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
 
+import '../constants.dart' show AppColors;
+import '../constants.dart' show Constants;
+
 class NavigationIconView {
   final String _title;
-  final Widget _icon;
-  final Widget _activeIcon;
+  final IconData _icon;
+  final IconData _activeIcon;
   final BottomNavigationBarItem item;
 
-  NavigationIconView({Key key, String title, Widget icon, Widget activeIcon})
+  NavigationIconView(
+      {Key key, String title, IconData icon, IconData activeIcon})
       : _title = title,
         _icon = icon,
         _activeIcon = activeIcon,
         item = BottomNavigationBarItem(
-          icon: icon,
-          title: Text(title),
-          activeIcon: activeIcon,
+          icon: Icon(
+            icon,
+            color: Color(AppColors.TabBarNormalColor),
+          ),
+          title: Text(title,
+              style: TextStyle(
+                fontSize: 14,
+                color: Color(AppColors.TabBarNormalColor),
+              )),
+          activeIcon: Icon(
+            activeIcon,
+            color: Color(AppColors.TabBarActiveColor),
+          ),
         );
 }
 
@@ -35,23 +49,47 @@ class _HomeScreenState extends State<HomeScreen> {
     _navigationViews = <NavigationIconView>[
       NavigationIconView(
         title: '微信',
-        icon: Icon(Icons.home),
-        activeIcon: Icon(Icons.tab_unselected),
+        icon: IconData(
+          0xe608,
+          fontFamily: Constants.IconFontFamily,
+        ),
+        activeIcon: IconData(
+          0xe656,
+          fontFamily: Constants.IconFontFamily,
+        ),
       ),
       NavigationIconView(
         title: '通讯录',
-        icon: Icon(Icons.tab),
-        activeIcon: Icon(Icons.table_chart),
+        icon: IconData(
+          0xe600,
+          fontFamily: Constants.IconFontFamily,
+        ),
+        activeIcon: IconData(
+          0xe601,
+          fontFamily: Constants.IconFontFamily,
+        ),
       ),
       NavigationIconView(
         title: '发现',
-        icon: Icon(Icons.ac_unit),
-        activeIcon: Icon(Icons.access_alarm),
+        icon: IconData(
+          0xe609,
+          fontFamily: Constants.IconFontFamily,
+        ),
+        activeIcon: IconData(
+          0xe603,
+          fontFamily: Constants.IconFontFamily,
+        ),
       ),
       NavigationIconView(
         title: '我',
-        icon: Icon(Icons.ac_unit),
-        activeIcon: Icon(Icons.access_alarm),
+        icon: IconData(
+          0xe626,
+          fontFamily: Constants.IconFontFamily,
+        ),
+        activeIcon: IconData(
+          0xe627,
+          fontFamily: Constants.IconFontFamily,
+        ),
       )
     ];
   }
@@ -60,11 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final BottomNavigationBar botNavBar = BottomNavigationBar(
       items: _navigationViews
-          .map<BottomNavigationBarItem>((NavigationIconView navigationView) => navigationView.item)
+          .map<BottomNavigationBarItem>(
+              (NavigationIconView navigationView) => navigationView.item)
           .toList(),
       currentIndex: _currentIndex,
       type: BottomNavigationBarType.fixed,
-      onTap: (index){
+      onTap: (index) {
         setState(() {
           _currentIndex = index;
         });
@@ -76,8 +115,16 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('微信'),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed: () { print('点击了搜索按钮'); }),
-          IconButton(icon: Icon(Icons.add), onPressed: () { print('显示下拉列表'); }),
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                print('点击了搜索按钮');
+              }),
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                print('显示下拉列表');
+              }),
         ],
       ),
       body: Container(

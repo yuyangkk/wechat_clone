@@ -72,7 +72,7 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 
-fonts:
-   - family: appIconFont
-     fonts:
-       - asset: ../Assets/Font/iconfont.ttf
+  fonts:
+    - family: appIconFont
+      fonts:
+        - asset: assets/fonts/iconfont.ttf
