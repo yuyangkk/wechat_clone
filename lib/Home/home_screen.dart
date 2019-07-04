@@ -17,16 +17,12 @@ class NavigationIconView {
         item = BottomNavigationBarItem(
           icon: Icon(
             icon,
-            color: Color(AppColors.TabBarNormalColor),
+//            color: Color(AppColors.TabBarNormalColor),
           ),
-          title: Text(title,
-              style: TextStyle(
-                fontSize: 14,
-                color: Color(AppColors.TabBarNormalColor),
-              )),
+          title: Text(title),
           activeIcon: Icon(
             activeIcon,
-            color: Color(AppColors.TabBarActiveColor),
+//            color: Color(AppColors.TabBarActiveColor), // 此处如果我们的BottomNavigationBar是fixed类型，可以通过修改其fixed属性修改选中颜色
           ),
         );
 }
@@ -103,6 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
           .toList(),
       currentIndex: _currentIndex,
       type: BottomNavigationBarType.fixed,
+      fixedColor: const Color(AppColors.TabBarActiveColor),
+      unselectedFontSize: 12.0,
+      selectedFontSize: 12.0,
       onTap: (index) {
         setState(() {
           _currentIndex = index;
@@ -114,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('微信'),
+        elevation: 0.0, // AppBar 底部阴影
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.search),
