@@ -39,6 +39,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<NavigationIconView> _navigationViews;
   int _currentIndex = 0;
+  List<Widget> _pages;
+  PageController _pageController;
 
   @override
   void initState() {
@@ -90,15 +92,29 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       )
     ];
+    _pages = [
+      Container(color: Colors.red),
+      Container(color: Colors.blue),
+      Container(color: Colors.yellow),
+      Container(color: Colors.brown),
+    ];
+    _pageController = PageController(initialPage: _currentIndex);
   }
 
 // 创建PopupMenuItem
   _buildPopupMenuItem(int iconName, String title) {
     return Row(
       children: <Widget>[
-        Icon(IconData(iconName, fontFamily: Constants.IconFontFamily), color:const Color(AppColors.AppBarMenuColor), size: 22.0,),
-        Container(width: 12.0,),
-        Text(title, style: TextStyle(color: const Color(AppColors.AppBarMenuColor))),
+        Icon(
+          IconData(iconName, fontFamily: Constants.IconFontFamily),
+          color: const Color(AppColors.AppBarMenuColor),
+          size: 22.0,
+        ),
+        Container(
+          width: 12.0,
+        ),
+        Text(title,
+            style: TextStyle(color: const Color(AppColors.AppBarMenuColor))),
       ],
     );
   }
@@ -118,6 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: (int index) {
         setState(() {
           _currentIndex = index;
+          // _pageController.animateToPage(_currentIndex,
+              // duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
         });
       },
     );
@@ -142,17 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             width: 10.0,
           ),
-//          IconButton(
-//              icon: Icon(
-//                IconData(
-//                  0xe84f,
-//                  fontFamily: Constants.IconFontFamily,
-//                ),
-//                size: 22.0,
-//              ),
-//              onPressed: () {
-//                print('点击了popmenu');
-//              }),
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return <PopupMenuItem<AppBarMenuType>>[
@@ -188,8 +195,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Container(
-        child: Text('内容'),
+      body: PageView.builder(
+        itemBuilder: (BuildContext context, int page) {
+          print('page:$page---currentPage:$_currentIndex');
+          return _pages[_currentIndex];
+        },
+        controller: _pageController,
+        itemCount: _pages.length,
+        onPageChanged: (int index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
       ),
       bottomNavigationBar: botNavBar,
     );
