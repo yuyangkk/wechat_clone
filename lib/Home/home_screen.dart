@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../constants.dart' show AppColors;
 import '../constants.dart' show Constants;
 
+enum AppBarMenuType { MENU_GROUP, MENU_ADD, MENU_SCAN, MENU_PAYMENT, MENU_HELP }
+
 class NavigationIconView {
   final String _title;
   final IconData _icon;
@@ -90,6 +92,17 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
+// 创建PopupMenuItem
+  _buildPopupMenuItem(int iconName, String title) {
+    return Row(
+      children: <Widget>[
+        Icon(IconData(iconName, fontFamily: Constants.IconFontFamily), color:const Color(AppColors.AppBarMenuColor), size: 22.0,),
+        Container(width: 12.0,),
+        Text(title, style: TextStyle(color: const Color(AppColors.AppBarMenuColor))),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final BottomNavigationBar botNavBar = BottomNavigationBar(
@@ -102,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
       fixedColor: const Color(AppColors.TabBarActiveColor),
       unselectedFontSize: 12.0,
       selectedFontSize: 12.0,
-      onTap: (index) {
+      onTap: (int index) {
         setState(() {
           _currentIndex = index;
         });
@@ -116,15 +129,63 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0.0, // AppBar 底部阴影
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(
+                IconData(
+                  0xe615,
+                  fontFamily: Constants.IconFontFamily,
+                ),
+                size: 22.0,
+              ),
               onPressed: () {
                 print('点击了搜索按钮');
               }),
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                print('显示下拉列表');
-              }),
+          Container(
+            width: 10.0,
+          ),
+//          IconButton(
+//              icon: Icon(
+//                IconData(
+//                  0xe84f,
+//                  fontFamily: Constants.IconFontFamily,
+//                ),
+//                size: 22.0,
+//              ),
+//              onPressed: () {
+//                print('点击了popmenu');
+//              }),
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuItem<AppBarMenuType>>[
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe608, '发起群聊'),
+                  value: AppBarMenuType.MENU_GROUP,
+                ),
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe608, '添加朋友'),
+                  value: AppBarMenuType.MENU_ADD,
+                ),
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe608, '扫一扫'),
+                  value: AppBarMenuType.MENU_SCAN,
+                ),
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe608, '收付款'),
+                  value: AppBarMenuType.MENU_PAYMENT,
+                ),
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe608, '帮助和反馈'),
+                  value: AppBarMenuType.MENU_HELP,
+                ),
+              ];
+            },
+            icon: Icon(IconData(0xe84f, fontFamily: Constants.IconFontFamily)),
+            onSelected: (value) {
+              print('点击的是$value');
+            },
+          ),
+          Container(
+            width: 10.0,
+          ),
         ],
       ),
       body: Container(
