@@ -9,11 +9,15 @@ class AppColors {
   static const ConversationItemBg = 0xffffffff;
   static const DesTitleColor = 0xff9e9e9e;
   static const DividerColor = 0xffd9d9d9;
+  static const NotifiDotBgColor = 0xffff3e3e;
+  static const NotifiDotTextColor = 0xffffffff;
+  static const ConversationMuteIcon = 0xffd8d8d8;
 }
 
 class AppStyles {
   static const TitleStyle = TextStyle(fontSize: 14.0, color: Color(AppColors.TitleColor));
   static const DesStyle = TextStyle(fontSize: 12.0, color: Color(AppColors.DesTitleColor));
+  static const NotifiDotStyle = TextStyle(fontSize: 12.0,color: Color(AppColors.NotifiDotTextColor),backgroundColor: Color(AppColors.NotifiDotBgColor));
 }
 
 class Constants {
@@ -21,4 +25,6 @@ class Constants {
   static const ConvresationAvatarWidth = 48.0;
   static const ConvresationAvatarHeight = 48.0;
   static const DividerWidth = 1.0;
+  static const UnreadMsgDotSize = 20.0;
+  static const ConversationMuteIconSize = 14.0;
 }
