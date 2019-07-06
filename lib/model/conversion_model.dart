@@ -5,7 +5,7 @@ class ConversationModel {
   const ConversationModel({
     @required this.avatar,
     @required this.title,
-    this.titleColor: AppColors.ConversationTitleColor,
+    this.titleColor: AppColors.TitleColor,
     this.des,
     this.updateAt,
     this.isMute: false,
