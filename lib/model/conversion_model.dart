@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../constants.dart' show AppColors;
 
+enum Device {
+  MAC,WIN
+}
+
 class ConversationModel {
   const ConversationModel({
     @required this.avatar,
@@ -133,3 +137,8 @@ const List<ConversationModel> mockConversations = [
     unreadMsgCount: 0,
   ),
 ];
+
+const ConversationMockData = {
+  'deviceInfo': Null,
+  'mockConversations': mockConversations,
+};
