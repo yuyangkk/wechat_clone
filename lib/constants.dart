@@ -39,4 +39,5 @@ class Constants {
   static const DividerWidth = 1.0;
   static const UnreadMsgDotSize = 20.0;
   static const ConversationMuteIconSize = 14.0;
+  static const ContactAvatarSize = 36.0;
 }
