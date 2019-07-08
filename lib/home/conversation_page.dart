@@ -5,7 +5,6 @@ import '../constants.dart' show AppColors;
 import '../constants.dart' show AppStyles;
 import '../constants.dart' show Constants;
 
-
 class ConversationItem extends StatelessWidget {
   const ConversationItem(this.conversation) : assert(conversation != null);
 
@@ -137,8 +136,7 @@ class ConversationItem extends StatelessWidget {
 }
 
 class _DeviceInfoItem extends StatelessWidget {
-
-  const _DeviceInfoItem({this.device: Device.WIN}) : assert(device != null);
+  const _DeviceInfoItem({this.device}) : assert(device != null);
 
   final Device device;
 
@@ -156,10 +154,13 @@ class _DeviceInfoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 24.0,top: 10.0,right: 24.0,bottom: 10.0),
+      padding:
+          EdgeInsets.only(left: 24.0, top: 10.0, right: 24.0, bottom: 10.0),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(width: Constants.DividerWidth, color: Color(AppColors.DividerColor)),
+          bottom: BorderSide(
+              width: Constants.DividerWidth,
+              color: Color(AppColors.DividerColor)),
         ),
         color: Color(AppColors.DeviceInfoItemBg),
       ),
@@ -175,8 +176,11 @@ class _DeviceInfoItem extends StatelessWidget {
             size: 24.0,
             color: Color(AppColors.DeviceInfoItemIcon),
           ),
-          SizedBox(width: 16.0,),
-          Text('$deviceName 微信已登录，手机通知已关闭', style: AppStyles.DiveceInfoItemTextStyle),
+          SizedBox(
+            width: 16.0,
+          ),
+          Text('$deviceName 微信已登录，手机通知已关闭',
+              style: AppStyles.DiveceInfoItemTextStyle),
         ],
       ),
     );
@@ -189,19 +193,25 @@ class ConversationPage extends StatefulWidget {
 }
 
 class _ConversationPageState extends State<ConversationPage> {
-
-  // const mockConversations<ConversationItem> = ConversationMockData
+  final ConversationPageData data = ConversationPageData.mock();
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
-        if (index == 0) {
-          return _DeviceInfoItem(device: Device.MAC,);
+        if (data.device != null) {
+          if (index == 0) {
+            return _DeviceInfoItem(device: data.device);
+          } else {
+            return ConversationItem(data.conversations[index - 1]);
+          }
+        } else {
+          return ConversationItem(data.conversations[index]);
         }
-        return new ConversationItem(mockConversations[index]);
       },
-      itemCount: mockConversations.length,
+      itemCount: data.device != null
+          ? data.conversations.length + 1
+          : data.conversations.length,
     );
   }
 }
