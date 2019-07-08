@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart' show AppColors;
 import '../constants.dart' show Constants;
 import './conversation_page.dart';
+import './contacts_page.dart';
 
 
 enum AppBarMenuType { MENU_GROUP, MENU_ADD, MENU_SCAN, MENU_PAYMENT, MENU_HELP }
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
     _pages = [
       ConversationPage(),
-      Container(color: Colors.blue),
+      ContactsPage(),
       Container(color: Colors.yellow),
       Container(color: Colors.brown),
     ];
