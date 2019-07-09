@@ -13,7 +13,7 @@ class Contact {
 }
 
 class ContactsPageData {
-  final List<Contact> contacs = [
+  final List<Contact> contacts = [
     const Contact(
       avatar: 'https://randomuser.me/api/portraits/men/53.jpg',
       name: 'Maurice Sutton',
