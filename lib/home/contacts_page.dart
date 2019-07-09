@@ -35,7 +35,8 @@ class _ContactItem extends StatelessWidget {
     }
 
     Widget _itemBody = Container(
-      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+      padding: const EdgeInsets.only(
+          left: 16.0, top: 10.0, right: 16.0, bottom: 10.0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -59,10 +60,13 @@ class _ContactItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            color: Colors.black,
+            padding:
+                EdgeInsets.only(left: 16.0, top: 4.0, right: 16.0, bottom: 4.0),
+            alignment: AlignmentDirectional.centerStart,
+            color: Color(AppColors.ContactSectionColor),
             child: Text(
               this.groupTitle,
-              style: TextStyle(color: Colors.white),
+              style: AppStyles.ContactSectionTitleStyle,
             ),
           ),
           _itemBody,
@@ -73,7 +77,6 @@ class _ContactItem extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0),
       child: _itemSection,
     );
   }
@@ -87,7 +90,6 @@ class ContactsPage extends StatefulWidget {
 class _ContactsPageState extends State<ContactsPage> {
 
   static ContactsPageData data = ContactsPageData.mock();
-
   final List<Contact> _contacts = data.contacts;
 
   final List<_ContactItem> _functionButtons = [
@@ -126,7 +128,10 @@ class _ContactsPageState extends State<ContactsPage> {
     // TODO: implement initState
     super.initState();
     // .. 链式调用
-//    _contacts..addAll(data.contacts);
+    Contact _contact = Contact(name: 'kk',avatar: 'https://randomuser.me/api/portraits/men/53.jpg',nameIndex: 'K');
+
+    _contacts..add(_contact)..add(_contact);
+    _contacts.sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
   }
 
   @override
@@ -137,11 +142,17 @@ class _ContactsPageState extends State<ContactsPage> {
           return _functionButtons[index];
         }
 
-        Contact _contact = _contacts[index - _functionButtons.length];
+        bool _isShowSection = true;
+        int _contactIndex = index - _functionButtons.length;
+        if(_contactIndex > 2) {
+          _isShowSection = _contacts[_contactIndex].nameIndex != _contacts[_contactIndex-1].nameIndex;
+        }
+
+        Contact _contact = _contacts[_contactIndex];
         return _ContactItem(
           avatar: _contact.avatar,
           title: _contact.name,
-          groupTitle: _contact.nameIndex,
+          groupTitle: _isShowSection ? _contact.nameIndex : null,
         );
       },
       itemCount: _contacts.length + _functionButtons.length,

@@ -9,17 +9,11 @@ import './contacts_page.dart';
 enum AppBarMenuType { MENU_GROUP, MENU_ADD, MENU_SCAN, MENU_PAYMENT, MENU_HELP }
 
 class NavigationIconView {
-  final String _title;
-  final IconData _icon;
-  final IconData _activeIcon;
   final BottomNavigationBarItem item;
 
   NavigationIconView(
       {Key key, String title, IconData icon, IconData activeIcon})
-      : _title = title,
-        _icon = icon,
-        _activeIcon = activeIcon,
-        item = BottomNavigationBarItem(
+      : item = BottomNavigationBarItem(
           icon: Icon(
             icon,
 //            color: Color(AppColors.TabBarNormalColor),
@@ -200,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: PageView.builder(
         itemBuilder: (BuildContext context, int page) {
-          print('page:$page---currentPage:$_currentIndex');
           return _pages[_currentIndex];
         },
         controller: _pageController,
