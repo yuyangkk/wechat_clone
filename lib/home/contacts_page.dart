@@ -20,7 +20,7 @@ class _ContactItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // 左边的图标
     Widget _avatarIcon;
-    if (this.avatar.indexOf('http') == 0) {
+    if (this.avatar.startsWith('http')) {
       _avatarIcon = Image.network(
         avatar,
         width: Constants.ContactAvatarSize,
@@ -35,8 +35,8 @@ class _ContactItem extends StatelessWidget {
     }
 
     Widget _itemBody = Container(
-      padding: const EdgeInsets.only(
-          left: 16.0, top: 10.0, right: 16.0, bottom: 10.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -82,15 +82,45 @@ class _ContactItem extends StatelessWidget {
   }
 }
 
+const indexBarText = [
+  "↑",
+  "☆",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z"
+];
+
 class ContactsPage extends StatefulWidget {
   @override
   _ContactsPageState createState() => _ContactsPageState();
 }
 
 class _ContactsPageState extends State<ContactsPage> {
-
-  static ContactsPageData data = ContactsPageData.mock();
-  final List<Contact> _contacts = data.contacts;
+  final ContactsPageData data = ContactsPageData.mock();
+  final List<Contact> _contacts = [];
 
   final List<_ContactItem> _functionButtons = [
     _ContactItem(
@@ -123,39 +153,59 @@ class _ContactsPageState extends State<ContactsPage> {
     ),
   ];
 
+  final List<Widget> _indexBar =
+      indexBarText.map((String text) => Expanded(child: Text(text))).toList();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // .. 链式调用
-    Contact _contact = Contact(name: 'kk',avatar: 'https://randomuser.me/api/portraits/men/53.jpg',nameIndex: 'K');
-
-    _contacts..add(_contact)..add(_contact);
-    _contacts.sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
+    _contacts
+      ..addAll(data.contacts)
+      ..addAll(data.contacts)
+      ..addAll(data.contacts);
+    _contacts
+        .sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        if (index < _functionButtons.length) {
-          return _functionButtons[index];
-        }
+    return Stack(
+      children: <Widget>[
+        ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            if (index < _functionButtons.length) {
+              return _functionButtons[index];
+            }
 
-        bool _isShowSection = true;
-        int _contactIndex = index - _functionButtons.length;
-        if(_contactIndex > 2) {
-          _isShowSection = _contacts[_contactIndex].nameIndex != _contacts[_contactIndex-1].nameIndex;
-        }
+            // 标记是否显示section，默认显示
+            bool _isShowSection = true;
+            int _contactIndex = index - _functionButtons.length;
+            if (_contactIndex > 0) {
+              _isShowSection = _contacts[_contactIndex].nameIndex !=
+                  _contacts[_contactIndex - 1].nameIndex;
+            }
 
-        Contact _contact = _contacts[_contactIndex];
-        return _ContactItem(
-          avatar: _contact.avatar,
-          title: _contact.name,
-          groupTitle: _isShowSection ? _contact.nameIndex : null,
-        );
-      },
-      itemCount: _contacts.length + _functionButtons.length,
+            Contact _contact = _contacts[_contactIndex];
+            return _ContactItem(
+              avatar: _contact.avatar,
+              title: _contact.name,
+              groupTitle: _isShowSection ? _contact.nameIndex : null,
+            );
+          },
+          itemCount: _contacts.length + _functionButtons.length,
+        ),
+        Positioned(
+          top: 0.0,
+          bottom: 0.0,
+          right: 0.0,
+          width: 24.0,
+          child: Column(
+            children: _indexBar,
+          ),
+        ),
+      ],
     );
   }
 }
