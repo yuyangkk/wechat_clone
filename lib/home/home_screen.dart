@@ -131,8 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: (int index) {
         setState(() {
           _currentIndex = index;
-           _pageController.animateToPage(_currentIndex,
-               duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+//           _pageController.animateToPage(_currentIndex,
+//               duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
         });
       },
     );
@@ -198,11 +198,12 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         controller: _pageController,
         itemCount: _pages.length,
-        onPageChanged: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+//        onPageChanged: (int index) {
+//          setState(() {
+//            _currentIndex = index;
+//          });
+//        },
+        physics: NeverScrollableScrollPhysics(), // 禁止滑动滚动
       ),
       bottomNavigationBar: botNavBar,
     );
