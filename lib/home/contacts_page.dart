@@ -201,8 +201,16 @@ class _ContactsPageState extends State<ContactsPage> {
           bottom: 0.0,
           right: 0.0,
           width: 24.0,
-          child: Column(
-            children: _indexBar,
+          child: GestureDetector(
+            child: Column(
+              children: _indexBar,
+            ),
+            onTapUp: (TapUpDetails details) {
+              Offset local = details.localPosition;
+              Offset global = details.globalPosition;
+              print(
+                  'local: $local , global:$global');
+            },
           ),
         ),
       ],
