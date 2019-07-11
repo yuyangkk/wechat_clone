@@ -15,6 +15,7 @@ class _ContactItem extends StatelessWidget {
   final String title;
   final String groupTitle;
   final VoidCallback onpressed;
+  final itemHeight = 48.0;
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +115,17 @@ const indexBarText = [
 ];
 
 class ContactsPage extends StatefulWidget {
+
+  Color indexBarBg = Colors.transparent;
+
   @override
   _ContactsPageState createState() => _ContactsPageState();
 }
 
 class _ContactsPageState extends State<ContactsPage> {
+
+  ScrollController _scrollController;
+
   final ContactsPageData data = ContactsPageData.mock();
   final List<Contact> _contacts = [];
 
@@ -160,6 +167,9 @@ class _ContactsPageState extends State<ContactsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _scrollController = new ScrollController();
+
     // .. 链式调用
     _contacts
       ..addAll(data.contacts)
@@ -167,6 +177,13 @@ class _ContactsPageState extends State<ContactsPage> {
       ..addAll(data.contacts);
     _contacts
         .sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -195,21 +212,37 @@ class _ContactsPageState extends State<ContactsPage> {
             );
           },
           itemCount: _contacts.length + _functionButtons.length,
+          controller: _scrollController,
         ),
         Positioned(
           top: 0.0,
           bottom: 0.0,
           right: 0.0,
-          width: 24.0,
+          width: 20.0,
           child: GestureDetector(
-            child: Column(
-              children: _indexBar,
+            child: Container(
+              color: widget.indexBarBg,
+              child: Column(
+                children: _indexBar,
+              ),
             ),
-            onTapUp: (TapUpDetails details) {
-              Offset local = details.localPosition;
-              Offset global = details.globalPosition;
-              print(
-                  'local: $local , global:$global');
+            onVerticalDragDown: (DragDownDetails details){
+              setState(() {
+                widget.indexBarBg = Colors.black26;
+              });
+              _scrollController.animateTo(250.0, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
+            },
+
+            onVerticalDragEnd: (DragEndDetails details){
+              setState(() {
+                widget.indexBarBg = Colors.transparent;
+              });
+            },
+
+            onVerticalDragCancel: (){
+              setState(() {
+                widget.indexBarBg = Colors.transparent;
+              });
             },
           ),
         ),
