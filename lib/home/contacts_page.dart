@@ -15,7 +15,20 @@ class _ContactItem extends StatelessWidget {
   final String title;
   final String groupTitle;
   final VoidCallback onpressed;
-  final itemHeight = 48.0;
+
+  final double marginVertical = 10.0; //item 上下 margin
+  final double itemTitleHeight = 24.0; // section 高度
+
+  // 计算每一行的高度，如果显示分组，则加上分组的高度
+  double _height(bool hasGroupTitle) {
+    final height = marginVertical * 2 +
+        Constants.ContactAvatarSize +
+        Constants.DividerWidth;
+    if (hasGroupTitle) {
+      return height + itemTitleHeight;
+    }
+    return height;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +48,10 @@ class _ContactItem extends StatelessWidget {
       );
     }
 
+    // cell 包含有分割线
     Widget _itemBody = Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.symmetric(vertical: marginVertical),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -54,6 +68,7 @@ class _ContactItem extends StatelessWidget {
         ],
       ),
     );
+
     // 分组标签
     Widget _itemSection;
     if (this.groupTitle != null) {
@@ -61,8 +76,8 @@ class _ContactItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding:
-                EdgeInsets.only(left: 16.0, top: 4.0, right: 16.0, bottom: 4.0),
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            height: itemTitleHeight,
             alignment: AlignmentDirectional.centerStart,
             color: Color(AppColors.ContactSectionColor),
             child: Text(
@@ -78,6 +93,7 @@ class _ContactItem extends StatelessWidget {
     }
 
     return Container(
+      height: _height(this.groupTitle != null),
       child: _itemSection,
     );
   }
@@ -115,7 +131,6 @@ const indexBarText = [
 ];
 
 class ContactsPage extends StatefulWidget {
-
   Color indexBarBg = Colors.transparent;
 
   @override
@@ -123,7 +138,6 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactsPage> {
-
   ScrollController _scrollController;
 
   final ContactsPageData data = ContactsPageData.mock();
@@ -163,6 +177,11 @@ class _ContactsPageState extends State<ContactsPage> {
   final List<Widget> _indexBar =
       indexBarText.map((String text) => Expanded(child: Text(text))).toList();
 
+  // Map 用于保存每个分组对应的位置, 默认是第一个，从0.0开始
+  // 因为ListView并不是直接把全部的item渲染的，所以，计算方式不能放在ListView.builder方法中，应该是拿到数据之后，先去计算，然后再去更新ListView
+  // 在点击indexBar的时候，要计算点击的位置属于第几个text，然后根据text找到Map中对应的索引所对应的的position，进行滚动
+  final Map _indexPositonMap = {indexBarText[0]: 0.0};
+
   @override
   void initState() {
     // TODO: implement initState
@@ -177,6 +196,17 @@ class _ContactsPageState extends State<ContactsPage> {
       ..addAll(data.contacts);
     _contacts
         .sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
+
+    // 计算总的滚动高度，
+    double totalHeight = _functionButtons.length * _functionButtons[0]._height(false);
+    // 计算 每个分组对应的开始position
+    for(int i = 0; i < indexBarText.length; i++) {
+      bool hasGroupTitle = true;
+      if(i > 0){
+        hasGroupTitle = _contacts[i].nameIndex.compareTo(_contacts[i-1].nameIndex) == 0;
+      }
+      totalHeight += _functionButtons[0]._height(hasGroupTitle);
+    }
   }
 
   @override
@@ -226,20 +256,19 @@ class _ContactsPageState extends State<ContactsPage> {
                 children: _indexBar,
               ),
             ),
-            onVerticalDragDown: (DragDownDetails details){
+            onVerticalDragDown: (DragDownDetails details) {
               setState(() {
                 widget.indexBarBg = Colors.black26;
               });
-              _scrollController.animateTo(250.0, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
+              _scrollController.animateTo(250.0,
+                  duration: Duration(milliseconds: 1), curve: Curves.easeIn);
             },
-
-            onVerticalDragEnd: (DragEndDetails details){
+            onVerticalDragEnd: (DragEndDetails details) {
               setState(() {
                 widget.indexBarBg = Colors.transparent;
               });
             },
-
-            onVerticalDragCancel: (){
+            onVerticalDragCancel: () {
               setState(() {
                 widget.indexBarBg = Colors.transparent;
               });
