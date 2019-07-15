@@ -16,11 +16,11 @@ class _ContactItem extends StatelessWidget {
   final String groupTitle;
   final VoidCallback onpressed;
 
-  final double marginVertical = 10.0; //item 上下 margin
-  final double itemTitleHeight = 24.0; // section 高度
+  static const double marginVertical = 10.0; //item 上下 margin
+  static const double itemTitleHeight = 24.0; // section 高度
 
   // 计算每一行的高度，如果显示分组，则加上分组的高度
-  double _height(bool hasGroupTitle) {
+  static double _height(bool hasGroupTitle) {
     final height = marginVertical * 2 +
         Constants.ContactAvatarSize +
         Constants.DividerWidth;
@@ -198,14 +198,20 @@ class _ContactsPageState extends State<ContactsPage> {
         .sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
 
     // 计算总的滚动高度，
-    double totalHeight = _functionButtons.length * _functionButtons[0]._height(false);
+    double totalHeight = _functionButtons.length * _ContactItem._height(false);
     // 计算 每个分组对应的开始position
-    for(int i = 0; i < indexBarText.length; i++) {
+    for(int i = 0; i < _contacts.length; i++) {
       bool hasGroupTitle = true;
       if(i > 0){
-        hasGroupTitle = _contacts[i].nameIndex.compareTo(_contacts[i-1].nameIndex) == 0;
+        // 不相等时表示有title
+        hasGroupTitle = _contacts[i].nameIndex.compareTo(_contacts[i-1].nameIndex) != 0;
       }
-      totalHeight += _functionButtons[0]._height(hasGroupTitle);
+      // 保存position到Map中
+      if(hasGroupTitle) {
+        _indexPositonMap[_contacts[i].nameIndex] = totalHeight;
+      }
+      // 更新totalPosition
+      totalHeight += _ContactItem._height(hasGroupTitle);
     }
   }
 
@@ -260,7 +266,8 @@ class _ContactsPageState extends State<ContactsPage> {
               setState(() {
                 widget.indexBarBg = Colors.black26;
               });
-              _scrollController.animateTo(250.0,
+              var position = _indexPositonMap['Z'];
+              _scrollController.animateTo(position,
                   duration: Duration(milliseconds: 1), curve: Curves.easeIn);
             },
             onVerticalDragEnd: (DragEndDetails details) {
