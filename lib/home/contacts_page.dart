@@ -174,9 +174,6 @@ class _ContactsPageState extends State<ContactsPage> {
     ),
   ];
 
-  final List<Widget> _indexBar =
-      indexBarText.map((String text) => Expanded(child: Text(text))).toList();
-
   // Map 用于保存每个分组对应的位置, 默认是第一个，从0.0开始
   // 因为ListView并不是直接把全部的item渲染的，所以，计算方式不能放在ListView.builder方法中，应该是拿到数据之后，先去计算，然后再去更新ListView
   // 在点击indexBar的时候，要计算点击的位置属于第几个text，然后根据text找到Map中对应的索引所对应的的position，进行滚动
@@ -200,14 +197,15 @@ class _ContactsPageState extends State<ContactsPage> {
     // 计算总的滚动高度，
     double totalHeight = _functionButtons.length * _ContactItem._height(false);
     // 计算 每个分组对应的开始position
-    for(int i = 0; i < _contacts.length; i++) {
+    for (int i = 0; i < _contacts.length; i++) {
       bool hasGroupTitle = true;
-      if(i > 0){
+      if (i > 0) {
         // 不相等时表示有title
-        hasGroupTitle = _contacts[i].nameIndex.compareTo(_contacts[i-1].nameIndex) != 0;
+        hasGroupTitle =
+            _contacts[i].nameIndex.compareTo(_contacts[i - 1].nameIndex) != 0;
       }
       // 保存position到Map中
-      if(hasGroupTitle) {
+      if (hasGroupTitle) {
         _indexPositonMap[_contacts[i].nameIndex] = totalHeight;
       }
       // 更新totalPosition
@@ -220,6 +218,51 @@ class _ContactsPageState extends State<ContactsPage> {
     // TODO: implement dispose
     _scrollController.dispose();
     super.dispose();
+  }
+
+  String getPosition(double tileHeight,Offset position) {
+    int word = position.dy ~/ tileHeight;
+    return 'A';
+  }
+
+  Widget _buildIndexBar(BuildContext context, BoxConstraints constraints) {
+    final List<Widget> _indexBar =
+      indexBarText.map((String text) => Expanded(child: Text(text))).toList();
+    final barTotalHight = constraints.biggest.height; // indexBar的总高度
+    final tileHeight = barTotalHight / indexBarText.length; // 获取indexBar每行的高度
+
+    return GestureDetector(
+      child: Container(
+        color: widget.indexBarBg,
+        child: Column(
+          children: _indexBar,
+        ),
+      ),
+      onVerticalDragDown: (DragDownDetails details) {
+
+        double local = details.localPosition.dy;
+        double global = details.globalPosition.dy;
+        print('local : $local, global: $global');
+
+        setState(() {
+          widget.indexBarBg = Colors.black26;
+        });
+        var indexTitle = getPosition(tileHeight, details.localPosition);
+        var position = _indexPositonMap[indexTitle];
+        _scrollController.animateTo(position,
+            duration: Duration(milliseconds: 1), curve: Curves.easeIn);
+      },
+      onVerticalDragEnd: (DragEndDetails details) {
+        setState(() {
+          widget.indexBarBg = Colors.transparent;
+        });
+      },
+      onVerticalDragCancel: () {
+        setState(() {
+          widget.indexBarBg = Colors.transparent;
+        });
+      },
+    );
   }
 
   @override
@@ -255,30 +298,9 @@ class _ContactsPageState extends State<ContactsPage> {
           bottom: 0.0,
           right: 0.0,
           width: 20.0,
-          child: GestureDetector(
-            child: Container(
-              color: widget.indexBarBg,
-              child: Column(
-                children: _indexBar,
-              ),
-            ),
-            onVerticalDragDown: (DragDownDetails details) {
-              setState(() {
-                widget.indexBarBg = Colors.black26;
-              });
-              var position = _indexPositonMap['Z'];
-              _scrollController.animateTo(position,
-                  duration: Duration(milliseconds: 1), curve: Curves.easeIn);
-            },
-            onVerticalDragEnd: (DragEndDetails details) {
-              setState(() {
-                widget.indexBarBg = Colors.transparent;
-              });
-            },
-            onVerticalDragCancel: () {
-              setState(() {
-                widget.indexBarBg = Colors.transparent;
-              });
+          child: LayoutBuilder( // layout可以获取到widget的总高度
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return _buildIndexBar(context, constraints);
             },
           ),
         ),
