@@ -219,10 +219,24 @@ class _ContactsPageState extends State<ContactsPage> {
     _scrollController.dispose();
     super.dispose();
   }
+  /*
+  * 获取相应的字母
+  */
+  String getTile(double tileHeight,Offset position) {
+    int index = (position.dy ~/ tileHeight).clamp(0, indexBarText.length);
+    return indexBarText[index];
+  }
 
-  String getPosition(double tileHeight,Offset position) {
-    int word = position.dy ~/ tileHeight;
-    return 'A';
+  /*
+  * 跳转到相应的位置
+  * */
+  void _jumpToSection(String tile) {
+    if(tile != null && tile.isNotEmpty){
+      var _offsetY = _indexPositonMap[tile];
+      if(_offsetY != null){
+        _scrollController.animateTo(_offsetY, duration: Duration(milliseconds: 1), curve: Curves.linear);
+      }
+    }
   }
 
   Widget _buildIndexBar(BuildContext context, BoxConstraints constraints) {
@@ -239,19 +253,25 @@ class _ContactsPageState extends State<ContactsPage> {
         ),
       ),
       onVerticalDragDown: (DragDownDetails details) {
+//        double local = details.localPosition.dy;
+//        double global = details.globalPosition.dy;
+//        print('local : $local, global: $global');
 
-        double local = details.localPosition.dy;
-        double global = details.globalPosition.dy;
-        print('local : $local, global: $global');
-
+        var indexTitle = getTile(tileHeight, details.localPosition);
         setState(() {
           widget.indexBarBg = Colors.black26;
+          _jumpToSection(indexTitle);
         });
-        var indexTitle = getPosition(tileHeight, details.localPosition);
-        var position = _indexPositonMap[indexTitle];
-        _scrollController.animateTo(position,
-            duration: Duration(milliseconds: 1), curve: Curves.easeIn);
+
       },
+
+      onVerticalDragUpdate: (DragUpdateDetails details) {
+        var indexTitle = getTile(tileHeight, details.localPosition);
+        setState(() {
+          _jumpToSection(indexTitle);
+        });
+      },
+
       onVerticalDragEnd: (DragEndDetails details) {
         setState(() {
           widget.indexBarBg = Colors.transparent;
