@@ -131,6 +131,7 @@ const indexBarText = [
 ];
 
 class ContactsPage extends StatefulWidget {
+
   Color indexBarBg = Colors.transparent;
 
   @override
@@ -177,7 +178,8 @@ class _ContactsPageState extends State<ContactsPage> {
   // Map 用于保存每个分组对应的位置, 默认是第一个，从0.0开始
   // 因为ListView并不是直接把全部的item渲染的，所以，计算方式不能放在ListView.builder方法中，应该是拿到数据之后，先去计算，然后再去更新ListView
   // 在点击indexBar的时候，要计算点击的位置属于第几个text，然后根据text找到Map中对应的索引所对应的的position，进行滚动
-  final Map _indexPositonMap = {indexBarText[0]: 0.0};
+  final Map _indexPositionMap = {indexBarText[0]: 0.0};
+  String _indexTitle = '';
 
   @override
   void initState() {
@@ -206,7 +208,7 @@ class _ContactsPageState extends State<ContactsPage> {
       }
       // 保存position到Map中
       if (hasGroupTitle) {
-        _indexPositonMap[_contacts[i].nameIndex] = totalHeight;
+        _indexPositionMap[_contacts[i].nameIndex] = totalHeight;
       }
       // 更新totalPosition
       totalHeight += _ContactItem._height(hasGroupTitle);
@@ -223,7 +225,7 @@ class _ContactsPageState extends State<ContactsPage> {
   * 获取相应的字母
   */
   String getTile(double tileHeight,Offset position) {
-    int index = (position.dy ~/ tileHeight).clamp(0, indexBarText.length);
+    int index = (position.dy ~/ tileHeight).clamp(0, indexBarText.length - 1);
     return indexBarText[index];
   }
 
@@ -232,7 +234,7 @@ class _ContactsPageState extends State<ContactsPage> {
   * */
   void _jumpToSection(String tile) {
     if(tile != null && tile.isNotEmpty){
-      var _offsetY = _indexPositonMap[tile];
+      var _offsetY = _indexPositionMap[tile];
       if(_offsetY != null){
         _scrollController.animateTo(_offsetY, duration: Duration(milliseconds: 1), curve: Curves.linear);
       }
@@ -242,8 +244,8 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget _buildIndexBar(BuildContext context, BoxConstraints constraints) {
     final List<Widget> _indexBar =
       indexBarText.map((String text) => Expanded(child: Text(text))).toList();
-    final barTotalHight = constraints.biggest.height; // indexBar的总高度
-    final tileHeight = barTotalHight / indexBarText.length; // 获取indexBar每行的高度
+    final barTotalHeight = constraints.biggest.height; // indexBar的总高度
+    final tileHeight = barTotalHeight / indexBarText.length; // 获取indexBar每行的高度
 
     return GestureDetector(
       child: Container(
@@ -257,74 +259,104 @@ class _ContactsPageState extends State<ContactsPage> {
 //        double global = details.globalPosition.dy;
 //        print('local : $local, global: $global');
 
-        var indexTitle = getTile(tileHeight, details.localPosition);
         setState(() {
           widget.indexBarBg = Colors.black26;
-          _jumpToSection(indexTitle);
+          _indexTitle = getTile(tileHeight, details.localPosition);
+          _jumpToSection(_indexTitle);
         });
 
       },
 
       onVerticalDragUpdate: (DragUpdateDetails details) {
-        var indexTitle = getTile(tileHeight, details.localPosition);
+
         setState(() {
-          _jumpToSection(indexTitle);
+          _indexTitle = getTile(tileHeight, details.localPosition);
+          _jumpToSection(_indexTitle);
         });
       },
 
       onVerticalDragEnd: (DragEndDetails details) {
+
         setState(() {
           widget.indexBarBg = Colors.transparent;
+          _indexTitle = '';
         });
       },
       onVerticalDragCancel: () {
+
         setState(() {
           widget.indexBarBg = Colors.transparent;
+          _indexTitle = '';
         });
       },
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-            if (index < _functionButtons.length) {
-              return _functionButtons[index];
-            }
 
-            // 标记是否显示section，默认显示
-            bool _isShowSection = true;
-            int _contactIndex = index - _functionButtons.length;
-            if (_contactIndex > 0) {
-              _isShowSection = _contacts[_contactIndex].nameIndex !=
-                  _contacts[_contactIndex - 1].nameIndex;
-            }
+    // 点击indexBar或者滑动时，中间显示的提示
+    Widget indexBarAlertText = Center(
+      child: Container(
+        height: 80.0,
+        width: 80.0,
+        decoration: BoxDecoration(
+          color: Colors.black45,
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ),
+        child: Center(
+          child: Text(_indexTitle, style: TextStyle(color: Colors.white, fontSize: 60.0),),
+        )
+      ),
+    );
 
-            Contact _contact = _contacts[_contactIndex];
-            return _ContactItem(
-              avatar: _contact.avatar,
-              title: _contact.name,
-              groupTitle: _isShowSection ? _contact.nameIndex : null,
-            );
+    // stack children
+    final List<Widget> stackChildren = [
+      ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          if (index < _functionButtons.length) {
+            return _functionButtons[index];
+          }
+
+          // 标记是否显示section，默认显示
+          bool _isShowSection = true;
+          int _contactIndex = index - _functionButtons.length;
+          if (_contactIndex > 0) {
+            _isShowSection = _contacts[_contactIndex].nameIndex !=
+                _contacts[_contactIndex - 1].nameIndex;
+          }
+
+          Contact _contact = _contacts[_contactIndex];
+          return _ContactItem(
+            avatar: _contact.avatar,
+            title: _contact.name,
+            groupTitle: _isShowSection ? _contact.nameIndex : null,
+          );
+        },
+        itemCount: _contacts.length + _functionButtons.length,
+        controller: _scrollController,
+      ),
+      Positioned(
+        top: 0.0,
+        bottom: 0.0,
+        right: 0.0,
+        width: 20.0,
+        child: LayoutBuilder( // layout可以获取到widget的总高度
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return _buildIndexBar(context, constraints);
           },
-          itemCount: _contacts.length + _functionButtons.length,
-          controller: _scrollController,
         ),
-        Positioned(
-          top: 0.0,
-          bottom: 0.0,
-          right: 0.0,
-          width: 20.0,
-          child: LayoutBuilder( // layout可以获取到widget的总高度
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return _buildIndexBar(context, constraints);
-            },
-          ),
-        ),
-      ],
+      ),
+    ];
+
+    if (_indexTitle != null && _indexTitle.isNotEmpty) {
+      stackChildren.add(indexBarAlertText);
+    }
+
+    return Stack(
+      children: stackChildren,
     );
   }
 }
