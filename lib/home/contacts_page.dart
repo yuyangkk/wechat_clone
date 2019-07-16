@@ -271,6 +271,7 @@ class _ContactsPageState extends State<ContactsPage> {
 
         setState(() {
           _indexTitle = getTile(tileHeight, details.localPosition);
+          print('indexTitle:$_indexTitle');
           _jumpToSection(_indexTitle);
         });
       },
