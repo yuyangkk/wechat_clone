@@ -17,14 +17,14 @@ class ConversationItem extends StatelessWidget {
     if (conversation.isAvatarFromNet()) {
       avatar = Image.network(
         conversation.avatar,
-        height: Constants.ConvresationAvatarHeight,
-        width: Constants.ConvresationAvatarWidth,
+        height: Constants.ConversationAvatarHeight,
+        width: Constants.ConversationAvatarWidth,
       );
     } else {
       avatar = Image.asset(
         conversation.avatar,
-        height: Constants.ConvresationAvatarHeight,
-        width: Constants.ConvresationAvatarWidth,
+        height: Constants.ConversationAvatarHeight,
+        width: Constants.ConversationAvatarWidth,
       );
     }
 

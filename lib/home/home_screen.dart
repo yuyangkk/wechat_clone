@@ -4,6 +4,7 @@ import '../constants.dart' show AppColors;
 import '../constants.dart' show Constants;
 import './conversation_page.dart';
 import './contacts_page.dart';
+import './discover_page.dart';
 
 
 enum AppBarMenuType { MENU_GROUP, MENU_ADD, MENU_SCAN, MENU_PAYMENT, MENU_HELP }
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _pages = [
       ConversationPage(),
       ContactsPage(),
-      Container(color: Colors.yellow),
+      DiscoverPage(),
       Container(color: Colors.brown),
     ];
     _pageController = PageController(initialPage: _currentIndex);

@@ -37,14 +37,16 @@ class AppStyles {
     fontSize: 14.0,
     color: Color(AppColors.ContactSectionTitleColor),
   );
+
 }
 
 class Constants {
   static const IconFontFamily = "appIconFont";
-  static const ConvresationAvatarWidth = 48.0;
-  static const ConvresationAvatarHeight = 48.0;
+  static const ConversationAvatarWidth = 48.0;
+  static const ConversationAvatarHeight = 48.0;
   static const DividerWidth = 1.0;
   static const UnreadMsgDotSize = 20.0;
   static const ConversationMuteIconSize = 14.0;
   static const ContactAvatarSize = 36.0;
+  static const DiscoverCellIconSize = 24.0;
 }
