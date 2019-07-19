@@ -25,6 +25,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           DiscoverCell(
             iconPath: 'assets/images/ic_quick_scan.png',
             title: '扫一扫',
+            showSplitLine: true,
             onPressed: () {
               print('点击了扫一扫');
             },
@@ -40,6 +41,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           DiscoverCell(
             iconPath: 'assets/images/ic_feeds.png',
             title: '看一看',
+            showSplitLine: true,
             onPressed: () {
               print('点击了看一看');
             },
@@ -55,6 +57,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           DiscoverCell(
             iconPath: 'assets/images/ic_shopping.png',
             title: '购物',
+            showSplitLine: true,
             onPressed: () {
               print('点击了购物');
             },
