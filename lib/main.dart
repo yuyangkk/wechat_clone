@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
       title: '微信demo',
       theme: ThemeData.light().copyWith(
         primaryColor: Color(AppColors.AppBarColor),
-        cardColor: const Color(AppColors.AppBarColor),
+        cardColor: const Color(AppColors.AppBarColor), // pop menu 背景色
       ),
       home: HomeScreen(),
     );

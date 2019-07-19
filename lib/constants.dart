@@ -49,4 +49,5 @@ class Constants {
   static const ConversationMuteIconSize = 14.0;
   static const ContactAvatarSize = 36.0;
   static const DiscoverCellIconSize = 24.0;
+  static const DiscoverSeparateSize = 16.0;
 }

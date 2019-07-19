@@ -5,6 +5,7 @@ import '../constants.dart' show Constants;
 import './conversation_page.dart';
 import './contacts_page.dart';
 import './discover_page.dart';
+import './account_page.dart';
 
 
 enum AppBarMenuType { MENU_GROUP, MENU_ADD, MENU_SCAN, MENU_PAYMENT, MENU_HELP }
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   List<Widget> _pages;
   PageController _pageController;
+  final _navigatorTitles = ['微信', '通讯录', '发现', ''];
 
   @override
   void initState() {
@@ -94,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ConversationPage(),
       ContactsPage(),
       DiscoverPage(),
-      Container(color: Colors.brown),
+      AccountPage(),
     ];
     _pageController = PageController(initialPage: _currentIndex);
   }
@@ -141,23 +143,23 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('微信'),
+        title: Text(_navigatorTitles[_currentIndex]),
         elevation: 0.0, // AppBar 底部阴影
         actions: <Widget>[
-          IconButton(
-              icon: Icon(
-                IconData(
-                  0xe615,
-                  fontFamily: Constants.IconFontFamily,
-                ),
-                size: 22.0,
-              ),
-              onPressed: () {
-                print('点击了搜索按钮');
-              }),
-          Container(
-            width: 10.0,
-          ),
+//          IconButton(
+//              icon: Icon(
+//                IconData(
+//                  0xe615,
+//                  fontFamily: Constants.IconFontFamily,
+//                ),
+//                size: 22.0,
+//              ),
+//              onPressed: () {
+//                print('点击了搜索按钮');
+//              }),
+//          Container(
+//            width: 10.0,
+//          ),
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return <PopupMenuItem<AppBarMenuType>>[
@@ -188,9 +190,9 @@ class _HomeScreenState extends State<HomeScreen> {
               print('点击的是$value');
             },
           ),
-          Container(
-            width: 10.0,
-          ),
+//          Container(
+//            width: 10.0,
+//          ),
         ],
       ),
       body: PageView.builder(
