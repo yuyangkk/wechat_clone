@@ -1,23 +1,7 @@
 import 'package:flutter/material.dart';
 import '../common/discover_cell.dart';
-import '../constants.dart' show Constants, AppColors;
-
-
-class AccountAvatar extends StatefulWidget {
-  @override
-  _AccountAvatarState createState() => _AccountAvatarState();
-}
-
-class _AccountAvatarState extends State<AccountAvatar> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 70.0,
-      color: Colors.red,
-    );
-  }
-}
-
+import '../common/separate_section.dart';
+import '../constants.dart' show AppColors;
 
 
 class DiscoverPage extends StatefulWidget {
@@ -32,9 +16,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
-          AccountAvatar(),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
 
           Divider(height: 1.0, color: Color(AppColors.DividerColor),),
           DiscoverCell(
@@ -44,9 +25,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
               print('点击了朋友圈');
             },
           ),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
-          SizedBox(height: Constants.DiscoverSeparateSize),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
+          SeparateSection(),
           DiscoverCell(
             iconPath: 'assets/images/ic_quick_scan.png',
             title: '扫一扫',
@@ -62,9 +41,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
               print('点击了摇一摇');
             },
           ),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
-          SizedBox(height: Constants.DiscoverSeparateSize),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
+          SeparateSection(),
           DiscoverCell(
             iconPath: 'assets/images/ic_feeds.png',
             title: '看一看',
@@ -80,9 +57,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
               print('点击了搜一搜');
             },
           ),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
-          SizedBox(height: Constants.DiscoverSeparateSize),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
+          SeparateSection(),
           DiscoverCell(
             iconPath: 'assets/images/ic_shopping.png',
             title: '购物',
@@ -99,9 +74,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             },
             content: '权利的游戏全新首发',
           ),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
-          SizedBox(height: Constants.DiscoverSeparateSize),
-          Divider(height: 1.0, color: Color(AppColors.DividerColor),),
+          SeparateSection(),
           DiscoverCell(
             iconPath: 'assets/images/ic_mini_program.png',
             title: '小程序',
